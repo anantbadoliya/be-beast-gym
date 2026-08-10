@@ -9,3 +9,4 @@ node_modules/
 *.zip
 be-beast-gym-extracted/
 mingit/
+push_to_github.ps1
