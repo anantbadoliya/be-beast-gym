@@ -1,0 +1,15 @@
+{
+  "project": "be-beast-gym-scroll-experience",
+  "version": "1.0.0",
+  "aiStudioIntegration": {
+    "enabled": true,
+    "geminiModel": "gemini-3.6-flash",
+    "capabilities": [
+      "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+    ],
+    "permissions": [
+      "camera",
+      "microphone"
+    ]
+  }
+}

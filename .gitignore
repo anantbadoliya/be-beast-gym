@@ -1,0 +1,11 @@
+# Dependencies & temporary files
+node_modules/
+.DS_Store
+*.log
+.env.local
+.env.*.local
+
+# Zip extracts / temp archives / portable git
+*.zip
+be-beast-gym-extracted/
+mingit/

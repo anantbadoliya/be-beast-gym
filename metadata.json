@@ -1,0 +1,6 @@
+{
+  "name": "Be Beast Gym - Phenoix Fitness",
+  "description": "India's Premium AI-Powered Luxury Fitness Experience featuring 270-frame scroll animation, virtual AI training, personalized automated diet planning, and interactive member dashboards.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
