@@ -511,17 +511,6 @@
           <p>Sunday: 6:00 AM - 9:00 PM</p>
           <p class="text-[#00CFFF] mt-2 font-bold">24/7 AI Stream Access</p>
         </div>
-        <div>
-          <h4 class="font-bold text-white uppercase tracking-wider mb-3">Admin Portal</h4>
-          <div class="flex flex-col gap-2">
-            <button onclick="openAdminPortalModal()" class="text-left text-[#00CFFF] hover:underline font-bold flex items-center gap-1.5 cursor-pointer">
-              <span>🔐 Admin Portal & Bookings</span>
-            </button>
-            <span id="footer-admin-slot-badge" class="text-[10px] text-amber-400 font-semibold block">
-              Checking Single Slot Status...
-            </span>
-          </div>
-        </div>
       </div>
     </footer>
 
@@ -572,15 +561,10 @@
         </button>
 
         <div class="pt-2 border-t border-white/10 flex flex-col gap-2">
-          <p class="text-[10px] text-center text-white/40 uppercase tracking-wider font-semibold">Quick Demo Access</p>
-          <div class="flex gap-2">
-            <button onclick="fillDemoUser()" class="flex-1 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-[11px] font-semibold text-white/80 transition-all">
-              ⚡ Demo Member
-            </button>
-            <button onclick="fillDemoAdmin()" class="flex-1 py-2 rounded-lg bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 text-[11px] font-semibold text-red-300 transition-all">
-              👑 Admin Access
-            </button>
-          </div>
+          <p class="text-[10px] text-center text-white/40 uppercase tracking-wider font-semibold">Quick Sample Fill</p>
+          <button onclick="fillDemoUser()" class="w-full py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-[11px] font-semibold text-white/80 transition-all cursor-pointer">
+            ⚡ Fill Sample Credentials (anantbadoliya@gmail.com)
+          </button>
         </div>
       </div>
     </div>
@@ -621,138 +605,6 @@
       </div>
       <div class="flex justify-end">
         <button onclick="logoutUser()" class="btn-outline text-xs text-red-400 border-red-500/30 hover:bg-red-500/10">Sign Out</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- SINGLE SLOT ADMIN PORTAL GATEWAY MODAL (Accessed exclusively from Footer) -->
-  <div id="admin-portal-modal" class="modal-overlay">
-    <div class="modal-box space-y-6 max-w-md border border-[#00CFFF]/40 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-white/10 pb-4">
-        <div>
-          <h3 class="text-xl font-bold font-display uppercase text-[#00CFFF]">BE BEAST GYM ADMIN PORTAL</h3>
-          <p id="admin-slot-header-subtitle" class="text-[11px] text-amber-400 font-bold mt-0.5">Checking Admin Slot Availability...</p>
-        </div>
-        <button onclick="closeAdminPortalModal()" class="text-white/50 hover:text-white text-xl cursor-pointer">✕</button>
-      </div>
-
-      <!-- Single Slot Claim / Sign In Tabs -->
-      <div class="flex rounded-xl bg-white/5 p-1 border border-white/10">
-        <button id="admin-tab-signin" onclick="switchAdminPortalTab('signin')" class="flex-1 py-2 rounded-lg text-xs font-bold uppercase transition-all bg-[#00CFFF] text-black shadow-lg">
-          Admin Log In
-        </button>
-        <button id="admin-tab-claim" onclick="switchAdminPortalTab('claim')" class="flex-1 py-2 rounded-lg text-xs font-bold uppercase transition-all text-white/60 hover:text-white">
-          Claim 1-Slot Admin
-        </button>
-      </div>
-
-      <!-- Single Slot Locked Banner -->
-      <div id="admin-slot-locked-notice" class="hidden p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-semibold leading-relaxed">
-        🔒 <strong>Single Admin Slot Claimed</strong><br />The single admin slot for this gym has already been created. Nobody else is allowed to register an admin account. Please sign in with the registered admin credentials.
-      </div>
-
-      <div class="space-y-4">
-        <div id="admin-claim-name-group" class="hidden">
-          <label class="text-xs text-white/70 block mb-1 font-semibold">Admin Full Name</label>
-          <input type="text" id="admin-portal-name" placeholder="Head Gym Admin" class="w-full glass-input p-3 rounded-lg text-sm" />
-        </div>
-
-        <div>
-          <label class="text-xs text-white/70 block mb-1 font-semibold">Admin Email Address</label>
-          <input type="email" id="admin-portal-email" placeholder="admin@bebeast.com" class="w-full glass-input p-3 rounded-lg text-sm" />
-        </div>
-
-        <div>
-          <label class="text-xs text-white/70 block mb-1 font-semibold">Admin Password</label>
-          <input type="password" id="admin-portal-password" placeholder="••••••••" class="w-full glass-input p-3 rounded-lg text-sm" />
-        </div>
-
-        <div id="admin-portal-status" class="text-xs text-center font-bold hidden"></div>
-
-        <button id="admin-portal-submit-btn" onclick="handleAdminPortalSubmit()" class="btn-primary w-full text-center py-3 font-display uppercase tracking-wider text-xs">
-          LOG IN TO ADMIN CONSOLE
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- FULL ADMIN MANAGEMENT CONSOLE (Live Supabase Bookings & Controls) -->
-  <div id="admin-modal" class="modal-overlay">
-    <div class="modal-box space-y-6 max-w-4xl border border-[#00CFFF]/40 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-white/10 pb-4">
-        <div>
-          <h3 class="text-2xl font-black font-display uppercase text-[#00CFFF]">ADMINISTRATOR MANAGEMENT CONSOLE</h3>
-          <p class="text-xs text-white/60 font-semibold mt-0.5">Live Website Bookings & Member Database (Supabase Sync)</p>
-        </div>
-        <button onclick="closeAdminModal()" class="text-white/50 hover:text-white text-xl cursor-pointer">✕</button>
-      </div>
-
-      <!-- Navigation Tabs inside Admin Console -->
-      <div class="flex border-b border-white/10 gap-4 text-xs font-bold uppercase">
-        <button id="admin-tab-btn-bookings" onclick="switchAdminConsoleTab('bookings')" class="pb-3 border-b-2 border-[#00CFFF] text-[#00CFFF]">
-          📋 Website Bookings (<span id="admin-bookings-count">0</span>)
-        </button>
-        <button id="admin-tab-btn-broadcast" onclick="switchAdminConsoleTab('broadcast')" class="pb-3 text-white/50 hover:text-white">
-          📢 Broadcast System Alert
-        </button>
-        <button id="admin-tab-btn-members" onclick="switchAdminConsoleTab('members')" class="pb-3 text-white/50 hover:text-white">
-          👥 Member Database
-        </button>
-      </div>
-
-      <!-- VIEW 1: LIVE WEBSITE BOOKINGS -->
-      <div id="admin-view-bookings" class="space-y-4">
-        <div class="flex justify-between items-center flex-wrap gap-2">
-          <h4 class="text-xs uppercase font-bold text-white/70 tracking-wider">All Customer Bookings Done on Website:</h4>
-          <button onclick="loadSupabaseBookings()" class="text-[11px] bg-white/10 px-3 py-1.5 rounded-lg border border-white/20 hover:bg-white/20 font-bold text-[#00CFFF]">
-            🔄 Refresh Supabase Bookings
-          </button>
-        </div>
-        <div class="overflow-x-auto max-h-[50vh] border border-white/10 rounded-xl">
-          <table class="w-full text-left text-xs text-white/80">
-            <thead class="bg-white/10 uppercase text-white/60 border-b border-white/10 font-bold">
-              <tr>
-                <th class="p-3">Customer Name</th>
-                <th class="p-3">Email & Phone</th>
-                <th class="p-3">Booking Type</th>
-                <th class="p-3">Details / Plan</th>
-                <th class="p-3">Date</th>
-                <th class="p-3">Status</th>
-              </tr>
-            </thead>
-            <tbody id="admin-bookings-table-body">
-              <tr>
-                <td colspan="6" class="p-6 text-center text-white/40">Loading website bookings from Supabase...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- VIEW 2: BROADCAST ALERT -->
-      <div id="admin-view-broadcast" class="hidden space-y-4">
-        <h4 class="text-xs uppercase font-bold text-white/50 tracking-wider">Send Broadcast System Alert Banner:</h4>
-        <div class="flex gap-2">
-          <input type="text" id="admin-msg-input" placeholder="Type alert (e.g. Special VIP Masterclass Tonight at 8 PM)..." class="flex-grow glass-input p-3 rounded-lg text-sm" />
-          <button onclick="sendAdminBroadcast()" class="btn-primary text-xs whitespace-nowrap font-display">BROADCAST ALERT</button>
-        </div>
-      </div>
-
-      <!-- VIEW 3: MEMBER DATABASE -->
-      <div id="admin-view-members" class="hidden space-y-4">
-        <div class="overflow-x-auto max-h-[40vh] border border-white/10 rounded-xl">
-          <table class="w-full text-left text-xs text-white/80">
-            <thead class="bg-white/5 uppercase text-white/40 border-b border-white/10">
-              <tr>
-                <th class="p-3">Member Name</th>
-                <th class="p-3">Email</th>
-                <th class="p-3">Tier</th>
-                <th class="p-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="admin-user-table"></tbody>
-          </table>
-        </div>
       </div>
     </div>
   </div>

@@ -938,15 +938,12 @@
   };
 
   window.fillDemoUser = function() {
-    document.getElementById('auth-email').value = "anantbadoliya@gmail.com";
-    document.getElementById('auth-password').value = "beast123456";
-    document.getElementById('auth-name').value = "Anant Badoliya";
-  };
-
-  window.fillDemoAdmin = function() {
-    document.getElementById('auth-email').value = "admin@bebeast.com";
-    document.getElementById('auth-password').value = "admin123456";
-    document.getElementById('auth-name').value = "Head Gym Admin";
+    const emailEl = document.getElementById('auth-email');
+    const passEl = document.getElementById('auth-password');
+    const nameEl = document.getElementById('auth-name');
+    if (emailEl) emailEl.value = "anantbadoliya@gmail.com";
+    if (passEl) passEl.value = "beast123456";
+    if (nameEl) nameEl.value = "Anant Badoliya";
   };
 
   // Persistent Registered User Store (LocalStorage Sync)
@@ -956,14 +953,13 @@
       if (stored) return JSON.parse(stored);
     } catch (e) {}
     return {
-      'anantbadoliya@gmail.com': { name: 'Anant Badoliya', password: 'beast123456', role: 'user' },
-      'admin@bebeast.com': { name: 'Head Gym Admin', password: 'admin123456', role: 'admin' }
+      'anantbadoliya@gmail.com': { name: 'Anant Badoliya', password: 'beast123456' }
     };
   }
 
-  function saveRegisteredUser(email, name, password, role = 'user') {
+  function saveRegisteredUser(email, name, password) {
     const db = getRegisteredUsersMap();
-    db[email.toLowerCase()] = { name, password, role };
+    db[email.toLowerCase()] = { name, password };
     try {
       localStorage.setItem('beast_registered_users_db', JSON.stringify(db));
     } catch (e) {}
@@ -979,35 +975,39 @@
     const name = (nameEl && nameEl.value.trim()) ? nameEl.value.trim() : "Beast Member";
 
     if (!email || !password) {
-      showAuthStatus("❌ Both Email and Password are required.", "error");
+      showAuthStatus("❌ Please fill in both Email Address and Password.", "error");
       return;
     }
 
-    showAuthStatus("Verifying user credentials with Supabase...", "info");
+    if (password.length < 6) {
+      showAuthStatus("❌ Password must be at least 6 characters.", "error");
+      return;
+    }
+
+    showAuthStatus("Verifying credentials with Supabase...", "info");
 
     try {
       if (currentAuthMode === 'signup') {
-        // 1. Register user in Supabase Auth
         if (supabase) {
           try {
-            await supabase.auth.signUp({
+            const { data, error } = await supabase.auth.signUp({
               email: email,
               password: password,
               options: { data: { name: name } }
             });
+            if (error && !error.message.includes('already registered')) {
+              showAuthStatus("❌ Sign Up Notice: " + error.message, "error");
+            }
           } catch (e) {}
         }
 
-        // 2. Save credentials in persistent storage
-        const role = (email === 'admin@bebeast.com') ? 'admin' : 'user';
-        saveRegisteredUser(email, name, password, role);
+        saveRegisteredUser(email, name, password);
 
-        // 3. Immediately Sign In & activate session
         currentUser = {
           name: name,
           email: email,
-          role: role,
-          membershipTier: role === 'admin' ? "Ultimate Owner" : "Elite AI Access Member",
+          role: 'user',
+          membershipTier: "Elite AI Access Member",
           enrolledProgram: "Beast Shred: AI Fat Loss Program"
         };
 
@@ -1015,9 +1015,13 @@
           localStorage.setItem('beast_active_session_user', JSON.stringify(currentUser));
         } catch (e) {}
 
-        showToast(`🎉 Account Created & Logged In! Welcome, ${name}.`, "success");
+        showToast(`🎉 Welcome to Be Beast Gym, ${name}! Your account is active.`, "success");
         updateUserHeader();
         closeAuthModal();
+
+        if (emailEl) emailEl.value = '';
+        if (passwordEl) passwordEl.value = '';
+        if (nameEl) nameEl.value = '';
 
       } else {
         // Sign In Flow
@@ -1037,14 +1041,13 @@
         const localReg = db[email];
 
         if (authUser || (localReg && localReg.password === password)) {
-          const userRole = (email === 'admin@bebeast.com' || (localReg && localReg.role === 'admin')) ? 'admin' : 'user';
-          const userName = authUser?.user_metadata?.name || localReg?.name || name;
+          const userName = authUser?.user_metadata?.name || localReg?.name || (email.split('@')[0]);
 
           currentUser = {
             name: userName,
             email: email,
-            role: userRole,
-            membershipTier: userRole === 'admin' ? "Ultimate Owner" : "Elite AI Access Member",
+            role: 'user',
+            membershipTier: "Elite AI Access Member",
             enrolledProgram: "Beast Shred: AI Fat Loss Program"
           };
 
@@ -1052,13 +1055,16 @@
             localStorage.setItem('beast_active_session_user', JSON.stringify(currentUser));
           } catch (e) {}
 
-          showToast(`⚡ Credentials Verified! Welcome back, ${currentUser.name}.`, "success");
+          showToast(`⚡ Welcome back, ${currentUser.name}!`, "success");
           updateUserHeader();
           closeAuthModal();
+
+          if (emailEl) emailEl.value = '';
+          if (passwordEl) passwordEl.value = '';
           return;
         }
 
-        showAuthStatus("❌ Incorrect Email or Password. Access Denied.", "error");
+        showAuthStatus("❌ Incorrect Email or Password. Please check your credentials.", "error");
         showToast("❌ Incorrect Email or Password.", "error");
       }
     } catch (err) {
@@ -1107,7 +1113,6 @@
     try { localStorage.removeItem('beast_active_session_user'); } catch (e) {}
     updateUserHeader();
     closeDashboardModal();
-    closeAdminModal();
     showToast("Signed out successfully.", "info");
     openAuthModal();
   };
@@ -1123,31 +1128,11 @@
     const modal = document.getElementById('dashboard-modal');
     if (modal) modal.classList.add('open');
   };
+
   window.closeDashboardModal = function() {
     const modal = document.getElementById('dashboard-modal');
     if (modal) modal.classList.remove('open');
   };
-
-  window.openAdminModal = function() {
-    if (!currentUser || currentUser.role !== 'admin') {
-      showToast("🔒 Administrator Access Required. Sign in with 'admin@bebeast.com'.", "error");
-      openAuthModal();
-      return;
-    }
-    renderAdminTable();
-    const modal = document.getElementById('admin-modal');
-    if (modal) modal.classList.add('open');
-  };
-  window.closeAdminModal = function() {
-    const modal = document.getElementById('admin-modal');
-    if (modal) modal.classList.remove('open');
-  };
-
-  function renderAdminTable() {
-    const tbody = document.getElementById('admin-user-table');
-    if (!tbody) return;
-    tbody.innerHTML = usersList.map(u => `
-      <tr class="border-b border-white/5 hover:bg-white/5">
         <td class="p-3 font-semibold text-white">${u.name}</td>
         <td class="p-3">${u.email}</td>
         <td class="p-3 text-[#00CFFF]">${u.membershipTier}</td>
